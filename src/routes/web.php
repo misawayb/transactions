@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
+
+Route::get('/',[TransactionController::class,('index')])->name('index');
+
+
