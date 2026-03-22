@@ -19,10 +19,12 @@ class CategorySeeder extends Seeder
             ['name' => '食費', 'type' => '支出'],
             ['name' => '住宅', 'type' => '支出'],
             ['name' => '光熱費', 'type' => '支出'],
+            ['name' => 'その他', 'type' => '収入'],
+            ['name' => 'その他', 'type' => '支出'],
         ];
 
         foreach ($categories as $category){
-            Category::create($category);
+            Category::firstOrCreate($category);
         }
     }
 }

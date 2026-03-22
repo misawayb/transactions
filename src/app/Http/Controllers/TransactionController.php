@@ -12,6 +12,7 @@ class TransactionController extends Controller
     // 一覧表示と検索機能
     public function index(Request $request)
     {
+        // 年・月と収支で絞り込み
         $query = Transaction::query();
         if ($request -> month) {
             [$year,$month]=explode('-',$request->month);
@@ -21,17 +22,28 @@ class TransactionController extends Controller
         if ($request ->type){
             $query ->where ('type',$request->type);
         }
+        $transactions = $query->orderBy('date', 'desc')->get();
 
-        $transactions = $query ->get();
+        // 今月合計
         $totalIncome = $transactions->where('type', '収入')->sum('amount');
         $totalExpense = $transactions->where('type', '支出')->sum('amount');
-        $categories = Category::all();
-        return view('transactions.index',compact('transactions','categories','totalIncome','totalExpense'));
+        $categories = Category::all()->where('name', '!=', 'その他');
+
+        // 先月合計
+        $lastMonth = now()->subMonth();
+        $lastQuery = Transaction::query()
+            ->whereYear('date', $lastMonth->year)
+            ->whereMonth('date', $lastMonth->month);
+        $lastTransactions =$lastQuery ->get();
+        $lastTotalIncome = $lastTransactions ->where('type','収入')->sum('amount');
+        $lastTotalExpense = $lastTransactions->where('type', '支出')->sum('amount');
+
+        return view('transactions.index',compact('transactions','categories','totalIncome','totalExpense', 'lastTotalIncome', 'lastTotalExpense'));
     }
 
 
     // 追加処理
-    public function store(Request $request)
+    public function store(TransactionRequest $request)
     {
         $transaction = $request -> only ('category_id','amount','memo','date');
         $category = Category::find($request->category_id);
@@ -39,19 +51,19 @@ class TransactionController extends Controller
         $transaction['type']=$type;
         Transaction::create($transaction);
 
-        return redirect()->route('transaction.index');
+        return redirect()->route('transaction.index')->with('success', '入出金に追加しました');
 
     }
 
     // 更新処理
-    public function update(Request $request, Transaction $transaction)
+    public function update(TransactionRequest $request, Transaction $transaction)
     {
         $data = $request->only('category_id', 'amount', 'memo', 'date');
         $category = Category::find($request->category_id);
         $data['type'] = $category->type;
         $transaction->update($data);
 
-        return redirect()->route('transaction.index');
+        return redirect()->route('transaction.index')->with('success','更新しました');
     }
 
     // 削除処理
@@ -59,6 +71,6 @@ class TransactionController extends Controller
     {
         $transaction -> delete();
 
-        return redirect()->route('transaction.index');
+        return redirect()->route('transaction.index')->with('success', '削除しました');
     }
 }

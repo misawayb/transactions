@@ -7,7 +7,7 @@ use App\Models\Transaction;
 
 class Category extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','type'];
 
     public function transactions(){
         return $this-> hasMany(Transaction::class);
