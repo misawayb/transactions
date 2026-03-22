@@ -1,0 +1,54 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.header{
+    width: 100%;
+    height: 80px;
+    top: 0;
+    background-color: rgb(255, 153, 115);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+}
+
+.header__logo a,
+.header__nav a{
+    margin: 10px 20px;
+    color: rgba(255, 235, 205);
+    text-decoration: none;
+    font-weight: bold;
+}
+.header__logo a{
+    font-size: 28px;
+}
+
+main {
+    margin: 0 auto;
+    max-width: 1230px;
+    margin-top: 80px;
+}
+
+.message {
+    width: 100%;
+    margin-top: 80px;
+}
+
+.message p{
+    margin: 0;
+}
+
+.message__success {
+    background-color: rgb(205, 241, 205);
+    color: darkgreen;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}

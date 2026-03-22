@@ -25,8 +25,13 @@ class TransactionController extends Controller
         $transactions = $query->orderBy('date', 'desc')->get();
 
         // 今月合計
-        $totalIncome = $transactions->where('type', '収入')->sum('amount');
-        $totalExpense = $transactions->where('type', '支出')->sum('amount');
+        $thisMonth = now();
+        $thisMonthTransactions = Transaction::query()
+            ->whereYear('date', $thisMonth->year)
+            ->whereMonth('date', $thisMonth->month)
+            ->get();
+        $totalIncome = $thisMonthTransactions->where('type', '収入')->sum('amount');
+        $totalExpense = $thisMonthTransactions->where('type', '支出')->sum('amount');
         $categories = Category::all()->where('name', '!=', 'その他');
 
         // 先月合計
